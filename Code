@@ -1,0 +1,60 @@
+//DO not Edit
+//Sample Program to send a message
+
+
+#include <SoftwareSerial.h>
+//Rx Pin of GSM connected to D7 of NodeMCU
+//Tx pin of GSM connected to D8 od NodeMCU
+SoftwareSerial mySerial(D7 , D8);
+void setup()
+{
+  mySerial.begin(9600);
+delay(1000);
+
+//PART 2 : Calling the Help Number
+mySerial.println("AT");
+updateSerial();
+mySerial.println("ATD+ +9172********;");                                                         //enter your Mobile number here
+updateSerial();
+delay(20000);
+mySerial.println("ATH");                                                                         //hang up
+updateSerial();
+delay(3000);
+
+
+  
+  //PART 1 : Sending Message through GSM
+mySerial.println("AT");
+delay(500);
+mySerial.println("AT+CMGF=1");
+delay(500);
+mySerial.println("AT+CMGS=\"+9172********\"\r");                                                 //enter your Mobile number here
+delay(500);
+mySerial.print("Help");
+delay(500);
+mySerial.write(26);
+
+
+}
+void loop()
+{
+}
+
+
+
+
+
+
+
+void updateSerial()
+{
+  delay(500);
+  while (Serial.available()) 
+  {
+    mySerial.write(Serial.read());//Forward what Serial received to Software Serial Port
+  }
+  while(mySerial.available()) 
+  {
+    Serial.write(mySerial.read());//Forward what Software Serial received to Serial Port
+  }
+}
